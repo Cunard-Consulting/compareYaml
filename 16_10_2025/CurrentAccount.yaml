@@ -1,0 +1,877 @@
+openapi: 3.0.1
+info:
+  title: Current Account
+  description: This service domain orchestrates a consumer checking/demand deposit account. The typical range of services and fees covers payments and deposits, standing orders, sweeps, liens, check and debit card access.
+  contact:
+    name: BIAN
+    url: https://bian.org
+  version: 13.0.0
+servers:
+  - url: https://virtserver.swaggerhub.com/B154/BIAN/CurrentAccount/13.0.0
+paths:
+  /CurrentAccount/Initiate:
+    post:
+      tags:
+        - CR - CurrentAccountFacility
+      summary: Initiate Current Account Facility
+      description: Initiate Current Account Facility
+      operationId: Initiate
+      x-schemas: true
+      requestBody:
+        $ref: '#/components/requestBodies/CurrentAccountFacility'
+      responses:
+        '200':
+          $ref: '#/components/responses/CurrentAccountFacility'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /CurrentAccount/{currentaccountid}/Retrieve:
+    get:
+      tags:
+        - CR - CurrentAccountFacility
+      summary: Retrieve Current Account Facility
+      description: Retrieve Current Account Facility
+      operationId: Retrieve
+      parameters:
+        - $ref: '#/components/parameters/currentaccountid'
+      responses:
+        '200':
+          $ref: '#/components/responses/CurrentAccountFacility'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /CurrentAccount/{currentaccountid}/Payment/Initiate:
+    post:
+      tags:
+        - BQ - Payment
+      summary: Initiate Payment
+      description: Initiate Payment
+      operationId: InitiatePayment
+      x-schemas: true
+      parameters:
+        - $ref: '#/components/parameters/currentaccountid'
+      requestBody:
+        $ref: '#/components/requestBodies/Payment'
+      responses:
+        '200':
+          $ref: '#/components/responses/Payment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /CurrentAccount/{currentaccountid}/Payment/{paymentid}/Retrieve:
+    get:
+      tags:
+        - BQ - Payment
+      summary: Retrieve Payment
+      description: Retrieve Payment
+      operationId: RetrievePayment
+      parameters:
+        - $ref: '#/components/parameters/currentaccountid'
+        - $ref: '#/components/parameters/paymentid'
+      responses:
+        '200':
+          $ref: '#/components/responses/Payment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    HTTPError:
+      type: object
+      properties:
+        status_code:
+          type: string
+          format: string
+          example: '404'
+        status:
+          type: string
+          format: string
+          example: 404 Not Found
+        message:
+          type: string
+          format: string
+          example: Not Found
+      description: Status Attributes
+    datetimetypevalues:
+      enum:
+        - MaturityDate
+        - InitiatedDate
+        - RequestedDate
+        - ExecutedDate
+        - OpenDate
+        - CloseDate
+        - ExpiryDate
+        - EffectiveDate
+        - CreatingDate
+        - ActivationDate
+        - DeactivationDate
+        - BlockingDate
+        - SendingDate
+        - ValidFromDate
+        - ValidToDate
+        - ReceivingDate
+        - SigningDate
+        - DueDate
+        - ValueDate
+        - FulfillmentDate
+      type: string
+      description: ">\r\n* `MaturityDate` - \r\n* `InitiatedDate` - \r\n* `RequestedDate` - \r\n* `ExecutedDate` - \r\n* `OpenDate` - \r\n* `CloseDate` - \r\n* `ExpiryDate` - \r\n* `EffectiveDate` - \r\n* `CreatingDate` - \r\n* `ActivationDate` - \r\n* `DeactivationDate` - \r\n* `BlockingDate` - \r\n* `SendingDate` - \r\n* `ValidFromDate` - \r\n* `ValidToDate` - \r\n* `ReceivingDate` - \r\n* `SigningDate` - \r\n* `DueDate` - \r\n* `ValueDate` - \r\n* `FulfillmentDate` - \r\n"
+    datetime:
+      type: object
+      properties:
+        DateTimeContent:
+          type: string
+          description: The particular date and time point in the progression of time
+          format: text
+          example: '2023-10-14T15:53:00Z'
+        TimeZoneCode:
+          type: string
+          description: The time zone to which the date time refers.
+          format: text
+          example: America/New_York
+        DaylightSavingIndicator:
+          type: string
+          description: ''
+          format: text
+          example: DST_ON
+        DateTimeType:
+          $ref: '#/components/schemas/datetimetypevalues'
+      description: |-
+        Date account was closed (if applicable). (Customer Product View)
+        Termination/closure date of agreement. (Bank Agreement View) ISODateTime|ISODateTime (https://www.iso20022.org/standardsrepository/type/ISODateTime)|Standard|ISO20022 BM ()
+    identifier:
+      type: object
+      properties:
+        IdentifierValue:
+          type: string
+          description: tThe actual unique code or number (e.g., passport number, drivers license number).
+          format: value
+          example: A123456789
+        IdentifierIssuingAuthority:
+          type: string
+          description: |-
+            Entity that assigns and manages the identification.
+            the organization or agency that issued the identifier (e.g., DMV, Passport Office).
+          format: text
+          example: Passport Office
+        IdentifierStartDate:
+          $ref: '#/components/schemas/datetime'
+        IdentifierEndDate:
+          $ref: '#/components/schemas/datetime'
+      description: A unique reference to an item or an occurrence of Current Account Facility GenericIdentification|GenericIdentification (https://www.iso20022.org/standardsrepository/type/GenericIdentification)|Standard|ISO20022 BM ()
+    name:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: A name is a word or phrase that constitutes the distinctive designation of a person, place, thing or concept. (UN/CEFAT)
+          format: datatype
+          example: Emma Johnson
+      description: |-
+        Name of Account Holder. (Customer Product View)
+        Official account title as per agreement (can include joint names). (Bank Agreement View) Name|Name (https://www.iso20022.org/standardsrepository/type/Name)|Standard|ISO20022 ()
+    accountidentificationtypevalues:
+      enum:
+        - BBAN
+        - IBAN
+        - UPIC
+        - AccountNumber
+        - PAN
+        - Paym
+        - Wallet
+        - SortCodeAndAccountNumber
+        - AIIN
+        - CUID
+      type: string
+      description: ">\r\n* `BBAN` - Basic Bank Account Number (BBAN) - identifier used nationally by financial institutions, ie, in individual countries, generally as part of a National Account Numbering Scheme(s), to uniquely identify the account of a customer. (ISO20022)\n\n.\r\n* `IBAN` - International Bank Account Number (IBAN) - identifier used internationally by financial institutions to uniquely identify the account of a customer. Further specifications of the format and content of the IBAN can be found in the standard ISO 13616 \"Banking and related financial services - International Bank Account Number (IBAN)\" version 1997-10-01, or later revisions. (ISO20022)\n\nAn identifier used internationally by financial institutions to uniquely identify the account of a customer at a financial institution, as described in the latest edition of the international standard ISO 13616. \"Banking and related financial services - International Bank Account Number (IBAN)\". (OBExternalAccountIdentification4Code)\r\n* `UPIC` - Universal Payment Identification Code (UPIC) - identifier used by the New York Clearing House to mask confidential data, such as bank accounts and bank routing numbers. UPIC numbers remain with business customers, regardless of banking relationship changes. (ISO20022)\r\n* `AccountNumber` - String of characters (mainly numbers) used to identify an account.(ISO20022)\n\r\n* `PAN` - Primary Account Number - identifier scheme used to identify a card account. (OBExternalAccountIdentification4Code)\r\n* `Paym` - Paym Scheme to make payments via mobile (OBExternalAccountIdentification4Code)\r\n* `Wallet` - A primary and unique account identifier used to identify a wallet.\nAn ASPSP must document on their developer portal, the payment methods that supports this account identifier.(OBExternalAccountIdentification4Code)\r\n* `SortCodeAndAccountNumber` - Sort Code and Account Number - identifier scheme used in the UK by financial institutions to identify the account of a customer. The identifier is the concatenation of the 6 digit UK sort code and 8 digit account number. (UK Open Banking)\r\n* `AIIN` - IssuerIdentificationNumber\r\n* `CUID` - CHIPSUniversalIdentifier\r\n"
+    accountidentification:
+      type: object
+      properties:
+        AccountIdentificationType:
+          $ref: '#/components/schemas/accountidentificationtypevalues'
+        AccountIdentification:
+          $ref: '#/components/schemas/identifier'
+      description: |-
+        Unique identifier for the customer’s current account in the bank’s system. (Customer Product View)
+        Internal reference linking product to the agreement. (Bank Agreement View) AccountIdentification |AccountIdentification  (https://www.iso20022.org/standardsrepository/type/AccountIdentification)|Standard|ISO20022 BM ()
+    currencycode:
+      type: object
+      properties:
+        Currencycode:
+          type: string
+          description: |+
+            A code identifying a currency according to ISO-4217.
+            A currency is a system of money in general use in a particular country.
+
+            Code allocated to a currency, by a maintenance agency, under an international identification scheme as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds". Valid currency codes are registered with the ISO 4217 Maintenance Agency, and consist of three contiguous letters. (ISO20022)
+
+          format: datatype
+          example: USD
+      description: ''
+    amounttypevalues:
+      enum:
+        - Principal
+        - Actual
+        - Estimated
+        - Maximum
+        - Default
+        - Replacement
+        - Incremental
+        - Decremental
+        - Reserved
+        - Available
+        - Used
+        - DuePayable
+        - Minimum
+        - Open
+        - Unknown
+        - Fixed
+      type: string
+      description: ">\r\n* `Principal` - \r\n* `Actual` - Actual amount.\r\n* `Estimated` - Estimated amount (the final amount could be above or below).\r\n* `Maximum` - Maximum amount (the final amount must be less or equal).\r\n* `Default` - Default amount.\r\n* `Replacement` - Replacement amount.\r\n* `Incremental` - Incremental amount for reservation.\r\n* `Decremental` - Decremental amount for reservation.\r\n* `Reserved` - Reserved or updated reserved amount for reservation.\r\n* `Available` - \r\n* `Used` - \r\n* `DuePayable` - \r\n* `Minimum` - \r\n* `Open` - The amount is open.(ISO20022)\r\n* `Unknown` - The amount is unkown.(ISO20022)\r\n* `Fixed` - The amount represents a fixed value.(ISO20022)\r\n"
+    amount:
+      type: object
+      properties:
+        AmountValue:
+          type: string
+          description: ''
+          format: value
+          example: '199.99'
+        AmountCurrency:
+          $ref: '#/components/schemas/currencycode'
+        DecimalPointPosition:
+          type: string
+          description: |
+            Decimal point position starts calulating from the right
+          format: text
+          example: '2'
+        AmountType:
+          $ref: '#/components/schemas/amounttypevalues'
+      description: |-
+        The monetary value to be transferred from the customers current account to the payee
+
+        Payment Amount and Currency refers to the monetary value of a payment and the specific currency in which it is denominated.
+
+        - Payment Amount  the numeric value of the transaction being transferred.
+
+        - Currency (CCY)  the 3-letter ISO code that specifies the type of money (e.g., USD, EUR, GBP) in which the amount is expressed.
+    frequencytypevalues:
+      enum:
+        - Annual
+        - Monthly
+        - Quarterly
+        - Semiannual
+        - Weekly
+        - Daily
+        - Adhoc
+        - Intraday
+        - Overnight
+        - Tendays
+        - Fortnightly
+        - Triggeredbymovement
+        - Never
+        - Rate
+        - Oncreditevent
+        - Upfront
+        - Onexpiry
+        - Hourly
+      type: string
+      description: ">\r\n* `Annual` - Event takes place every year or once a year.\r\n* `Monthly` - Event takes place every month or once a month.\r\n* `Quarterly` - Event takes place every three months or four times a year.\r\n* `Semiannual` - Event takes place every six months or two times a year.\r\n* `Weekly` - Event takes place once a week.\r\n* `Daily` - Event takes place every day.\r\n* `Adhoc` - Event takes place on request or as necessary.\r\n* `Intraday` - Event takes place several times a day.\r\n* `Overnight` - Event takes place overnight.\r\n* `Tendays` - Event takes place every ten business days.\r\n* `Fortnightly` - Event takes place every two weeks.\r\n* `Triggeredbymovement` - Event takes place at the end of the day if there was a movement on the account, otherwise nothing is sent that day.\r\n* `Never` - Event does never take place.\r\n* `Rate` - Event takes place based on a change of a rate.\r\n* `Oncreditevent` - Event occurs due to a credit event occurring for an issuer.\r\n* `Upfront` - Event that takes place at the initiation of a trade or agreement.\r\n* `Onexpiry` - Event occurs on expiry of a financial contract.\r\n* `Hourly` - Event takes place every hours.\r\n"
+    frequency:
+      type: object
+      properties:
+        FrequencyCode:
+          $ref: '#/components/schemas/frequencytypevalues'
+        FrequencyName:
+          $ref: '#/components/schemas/name'
+        FrequencyDefinition:
+          type: string
+          description: ''
+          format: text
+          example: weekly
+      description: The interval at which the payment repeats.
+    datetimeperiod:
+      type: object
+      properties:
+        FromDateTime:
+          $ref: '#/components/schemas/datetime'
+        ToDateTime:
+          $ref: '#/components/schemas/datetime'
+      description: Period of time during which the status is valid.
+    partytypevalues:
+      enum:
+        - Person
+        - Organisation
+      type: string
+      description: ">\r\n* `Person` - Human entity, as distinguished from a corporate entity (which is sometimes referred to as an 'artificial person'). ISO20022\r\n* `Organisation` - Organised structure that is set up for a particular purpose. For example, a business, government body, department, charity, or financial institution. ISO20022\r\n"
+    partyidentificationtypevalues:
+      enum:
+        - Taxidentificationnumber
+        - Nationalregistrationnumber
+        - Registrationauthorityidentification
+        - LEI(LegalEntityIdentifier)
+        - Alienregistrationnumber
+        - Passportnumber
+        - Taxexemptidentificationnumber
+        - Corporateidentification
+        - Driverlicensenumber
+        - Foreigninvestmentidentitynumber
+        - Socialsecuritynumber
+        - Identitycardnumber
+        - Concat
+        - Nationalregistrationidentificationnumber
+      type: string
+      description: ">\r\n* `Taxidentificationnumber` - Number assigned by a tax authority to an entity.\r\n* `Nationalregistrationnumber` - Number assigned by a national registration authority to an entity. In Singapore this is known as the NRIC. (ISO20022)\r\n* `Registrationauthorityidentification` - An identifier for the Legal Entity in a business registry in the jurisdiction of legal registration, or in the appropriate registration authority. (ISO20022)\r\n* `LEI(LegalEntityIdentifier)` - \r\n* `Alienregistrationnumber` - Number assigned by a government agency to identify foreign nationals.\r\n* `Passportnumber` - Number assigned by a passport authority.\r\n* `Taxexemptidentificationnumber` - Number assigned to a tax exempt entity.\r\n* `Corporateidentification` - Number assigned to a corporate entity.\r\n* `Driverlicensenumber` - Number assigned to a driver's license.\r\n* `Foreigninvestmentidentitynumber` - Number assigned to a foreign investor (other than the alien number).\r\n* `Socialsecuritynumber` - Number assigned by a social security agency.\r\n* `Identitycardnumber` - Number assigned by a national authority to an identity card.\r\n* `Concat` - Number assigned by an issuer to identify a customer via the concatenation of the birthdate and characters of the first name and surname.\r\n* `Nationalregistrationidentificationnumber` - National registration identification number. In Singapore this is known as the NRIC.\r\n"
+    partyidentification:
+      type: object
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/partyidentificationtypevalues'
+        PartyIdentification:
+          $ref: '#/components/schemas/identifier'
+      description: ''
+    partylegalstructuretypevalues:
+      enum:
+        - Individual
+        - CommunityInterestCompany
+        - CharitableIncorporatedOrganisation
+        - Co-Operative
+        - Charity
+        - GeneralPartnership
+        - LimitedLiabilityPartnership
+        - ScottishLimitedPartnership
+        - LimitedPartnership
+        - PrivateLimitedCompany
+        - PublicLimitedCompany
+        - Sole(SoleTrader)
+      type: string
+      description: ">\r\n* `Individual` - \r\n* `CommunityInterestCompany` - \r\n* `CharitableIncorporatedOrganisation` - \r\n* `Co-Operative` - \r\n* `Charity` - \r\n* `GeneralPartnership` - \r\n* `LimitedLiabilityPartnership` - \r\n* `ScottishLimitedPartnership` - \r\n* `LimitedPartnership` - \r\n* `PrivateLimitedCompany` - \r\n* `PublicLimitedCompany` - \r\n* `Sole(SoleTrader)` - \r\n"
+    industrycode:
+      type: object
+      properties:
+        Industrycode:
+          type: string
+          description: Code to identify economic activities by ISIC (United Nations International Standard Industrial Classification of all Economic Activities).
+          format: datatype
+          example: G4730
+      description: Economical activity of Party (ISO20022)
+    party:
+      type: object
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/name'
+        PartyType:
+          $ref: '#/components/schemas/partytypevalues'
+        PartyDateTime:
+          $ref: '#/components/schemas/datetime'
+        PartyIdentification:
+          $ref: '#/components/schemas/partyidentification'
+        PartyLegalStructureType:
+          $ref: '#/components/schemas/partylegalstructuretypevalues'
+        PartyActivityIndicator:
+          $ref: '#/components/schemas/industrycode'
+      description: ''
+    partyinvolvementtypevalues:
+      enum:
+        - AgreementInvolvement
+        - PartyInvolvement
+        - ArrangementInvolvement
+        - DesignSpecificationInvolvement
+        - RelationshipInvolvement
+        - LocationInvolvement
+        - BankGuaranteeInvolvement
+      type: string
+      description: ">\r\n* `AgreementInvolvement` - \r\n* `PartyInvolvement` - \r\n* `ArrangementInvolvement` - \r\n* `DesignSpecificationInvolvement` - \r\n* `RelationshipInvolvement` - \r\n* `LocationInvolvement` - \r\n* `BankGuaranteeInvolvement` - \r\n"
+    partyrole:
+      type: object
+      properties:
+        PartyRoleType:
+          type: string
+          description: ''
+          format: text
+          example: attendee
+        PartyRoleName:
+          $ref: '#/components/schemas/name'
+        PartyRoleValidityPeriod:
+          $ref: '#/components/schemas/datetimeperiod'
+        PartyInvolvementType:
+          $ref: '#/components/schemas/partyinvolvementtypevalues'
+      description: ''
+    involvedparty:
+      type: object
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/party'
+        PartyInvolvement:
+          $ref: '#/components/schemas/partyrole'
+      description: Party who plays a  specific role in the context of assigning a status.
+    status:
+      type: object
+      properties:
+        StatusReason:
+          type: string
+          description: Specifies the reasons for the status.
+          format: text
+          example: System maintenance scheduled
+        StatusDateTime:
+          $ref: '#/components/schemas/datetime'
+        StatusValidityPeriod:
+          $ref: '#/components/schemas/datetimeperiod'
+        StatusInvolvedParty:
+          $ref: '#/components/schemas/involvedparty'
+      description: WHERE the payment currently is in its lifecycle (scheduled, processing, completed, failed).
+    paymentmethodtypevalues:
+      enum:
+        - Cheque
+        - Credittransfer
+        - Directdebit
+        - Transferadvice
+        - Direct
+        - Classical
+      type: string
+      description: ">\r\n* `Cheque` - Written order to a bank to pay a certain amount of money from one person to another person.\r\n* `Credittransfer` - Transfer of an amount of money in the books of the account servicer.\r\n* `Directdebit` - Collection of an amount of money from the debtor's bank account by the creditor. The amount of money and dates of collections may vary.\r\n* `Transferadvice` - Transfer of an amount of money in the books of the account servicer. An advice should be sent back to the account owner.\r\n* `Direct` - Direct method.\r\n* `Classical` - Classical method.\r\n"
+    schedule:
+      type: object
+      properties:
+        ScheduleType:
+          type: string
+          description: ''
+          format: text
+          example: weekly-summary
+      description: 'Processing schedule for repeating payments for standing orders (e.g. start date, end, period, number/cycles). Note this triggers an internal execution call as necessary. '
+    Payment:
+      type: object
+      properties:
+        CurrentAccountFacilityIdentification:
+          $ref: '#/components/schemas/identifier'
+        PaymentIdentification:
+          $ref: '#/components/schemas/identifier'
+        CustomerReference:
+          type: string
+          description: Reference to authorized party with ability to initiate payments from the source account
+          format: text
+          example: cust-ref-001823
+        PayeeReference:
+          type: string
+          description: Reference to a party that receives an amount of money from the debtor.
+          format: text
+          example: payee-12345
+        PayeeName:
+          $ref: '#/components/schemas/name'
+        PayeeAccountIdentification:
+          $ref: '#/components/schemas/accountidentification'
+        PaymentAmountandCurrency:
+          $ref: '#/components/schemas/amount'
+        PaymentExecutionDate:
+          $ref: '#/components/schemas/datetime'
+        PaymentFrequency:
+          $ref: '#/components/schemas/frequency'
+        PaymentEndDate:
+          $ref: '#/components/schemas/datetime'
+        PaymentStatus:
+          $ref: '#/components/schemas/status'
+        PayeeBankReference:
+          type: string
+          description: Reference to a financial institution servicing an account for the payee.
+          format: text
+          example: US12345678901234567890
+        PaymentMethod:
+          $ref: '#/components/schemas/paymentmethodtypevalues'
+        PaymentDescription:
+          type: string
+          description: A narrative or description attached to the payment.
+          format: text
+          example: 'Payment for invoice #5678'
+        PaymentSchedule:
+          $ref: '#/components/schemas/schedule'
+        InstructedPaymentReference:
+          type: string
+          description: Reference to the instructed payment
+          format: text
+          example: INV-20231104-0653
+        ExecutedTransactionReference:
+          type: string
+          description: Reference to the executed payment
+          format: text
+          example: TXN-20230915-12345678
+      description: Contains all details of the outbound payment arrangements, the instructional content of invoked payment service requests and where applicable details of the outcome of that request.
+    currencytypevalues:
+      enum:
+        - BaseCurrency
+        - ReportingCurrency
+        - SecondaryCurrency
+        - TransferCurrency
+        - SettlementCurrency
+      type: string
+      description: ">\r\n* `BaseCurrency` - Base currency of the account. (ISO20022)\n\r\n* `ReportingCurrency` - Currency used to calculate and report the balance and related entries of an account. (ISO20022)\n\r\n* `SecondaryCurrency` - \r\n* `TransferCurrency` - Currency of the amount to be transferred which may be different from the currency of the debtor's account. (ISO20022)\r\n* `SettlementCurrency` - Specifies the currency used for settlement, if different from the account currency. \r\n"
+    accountcurrency:
+      type: object
+      properties:
+        AccountCurrencyType:
+          $ref: '#/components/schemas/currencytypevalues'
+        AccountCurrency:
+          $ref: '#/components/schemas/currencycode'
+      description: |-
+        The currency in which a customers current account is maintained.. (Customer Product View)
+        Defined in the product terms (multi-currency accounts possible). (Bank Agreement View) CurrencyCode|CurrencyCode (https://www.iso20022.org/standardsrepository/type/CurrencyCode)|Standard|ISO20022 BM ()
+    balancetypevalues:
+      enum:
+        - OpeningBalance
+        - ClosingBalance
+        - CurrentBalance
+        - AvailableBalance
+        - LedgerBalance
+        - ReserveBalance
+        - FreeBalance
+        - PrincipalBalance
+        - ClosingAvailable
+        - ClosingBooked
+        - ForwardAvailable
+        - Information
+        - InterimAvailable
+        - InterimBooked
+        - OpeningAvailable
+        - OpeningBooked
+        - PreviouslyClosedBooked
+        - Expected
+      type: string
+      description: ">\r\n* `OpeningBalance` - Book balance of the account at the beginning of the account servicer's business day. It always equals the closing book balance from the previous business day. Note: the available balance at the beginning of the account servicer's business day may be different from the closing book balance from the previous business day. (ISO20022)\r\n* `ClosingBalance` - Balance of the account at the end of the account servicer's business day. It is the sum of the opening balance at the beginning of the day and all entries booked to the account during the account servicer's business day. (ISO20022)\r\n* `CurrentBalance` - Balance of the account at a precise moment in time. (ISO20022)\r\n* `AvailableBalance` - Balance of money or securities that is at the disposal of the account owner on the date specified. (ISO20022)\r\n* `LedgerBalance` - Ledger balance refers to posted transactions (e.g. limit authorisation amount - posted transactions). (ISO20022)\r\n* `ReserveBalance` - \r\n* `FreeBalance` - \r\n* `PrincipalBalance` - \r\n* `ClosingAvailable` - Closing balance of amount of money that is at the disposal of the account owner on the date specified.\r\n* `ClosingBooked` - Balance of the account at the end of the pre-agreed account reporting period. It is the sum of the opening booked balance at the beginning of the period and all entries booked to the account during the pre-agreed account reporting period.\r\n* `ForwardAvailable` - Forward available balance of money that is at the disposal of the account owner on the date specified.\r\n* `Information` - Balance for informational purposes.\r\n* `InterimAvailable` - Available balance calculated in the course of the account servicer's business day, at the time specified, and subject to further changes during the business day. The interim balance is calculated on the basis of booked credit and debit items during the calculation time/period specified.\r\n* `InterimBooked` - Balance calculated in the course of the account servicer's business day, at the time specified, and subject to further changes during the business day. The interim balance is calculated on the basis of booked credit and debit items during the calculation time/period specified.\r\n* `OpeningAvailable` - Opening balance of amount of money that is at the disposal of the account owner on the date specified.\r\n* `OpeningBooked` - Book balance of the account at the beginning of the account reporting period. It always equals the closing book balance from the previous report.\r\n* `PreviouslyClosedBooked` - Balance of the account at the previously closed account reporting period. The opening booked balance for the new period has to be equal to this balance.\nUsage: the previously booked closing balance should equal (inclusive date) the booked closing balance of the date it references and equal the actual booked opening balance of the current date.\r\n* `Expected` - Balance, composed of booked entries and pending items known at the time of calculation, which projects the end of day balance if everything is booked on the account and no other entry is posted.\r\n"
+    debitcreditindicatortvalues:
+      enum:
+        - Debit
+        - Credit
+      type: string
+      description: ">\r\n* `Debit` - Transaction is a debt entry\r\n* `Credit` - Transaction is a credit entry\r\n"
+    balancecounterpartytypevalues:
+      enum:
+        - Bilateral
+        - Multilateral
+      type: string
+      description: ">\r\n* `Bilateral` - Balance calculated regarding one member in the system. (ISO20022)\r\n* `Multilateral` - Balance calculated regarding all members in the system. (ISO20022)\r\n"
+    balancesubtypevalues:
+      enum:
+        - Adjustment
+        - Basecurrency
+        - Blocked
+        - Blockedfunds
+        - Daylightoverdraft
+        - Eligibleassets
+        - Firmcollateralization
+        - Amountsthathavebeenusedtoserveasfirmcollateral
+        - Securitiesforecast
+        - Netfunding
+        - Intermediate
+        - Localcurrency
+        - Limitrelated
+        - Reservedliquidity
+        - Securitiespending
+        - Payinpayout
+        - Progressiveaverage
+        - Reserve
+        - Selfcollateralization
+        - Amountsthathavebeenusedtoserveasselfcollateral
+        - Threshold
+      type: string
+      description: ">\r\n* `Adjustment` - Balance to be held in the settlement account in order to comply with the average reserve due, in the event that the bank's balance is equal to the reserve due during the remaining days of the maintenance period.\r\n* `Basecurrency` - Balance representing the amount in the domestic or base accounting currency.\r\n* `Blocked` - Balance representing the regulatory reserve that a financial institution must have with the account servicing institution, eg, the minimum credit balance a financial institution is to keep with its Central Bank for mandatory reserve purposes. In some countries, a blocked balance is known as a 'reserve' balance.\r\n* `Blockedfunds` - Balance representing funds that cannot be touched by the account owner.\r\n* `Daylightoverdraft` - Balance representing the intra day overdraft granted by the Central Bank to financial institutions participating in a RTGS system. This balance may vary over time and shall be offset at the end of the day.\r\n* `Eligibleassets` - Balance representing the potential loan a Central Bank would make in cash if the collateral is pledged, eg, securities available and eligible as collateral with the Central Bank.\r\n* `Firmcollateralization` - Balance representing the forecast of the cash-equivalent resulting from evaluation of existing holdings at CSD that are qualified to serve as collateral.\r\n* `Amountsthathavebeenusedtoserveasfirmcollateral` - Balance representing the cash equivalent resulting from evaluation of existing holdings at CSD that are qualified to serve as collateral and have been used as collateral.\r\n* `Securitiesforecast` - Balance representing the total of all balance types representing the forecast of transactions to settle, blocked items, custody transactions and corporate actions cash disbursements.\r\n* `Netfunding` - Balance representing the net amount to be funded\_resulting from the difference between\_the total of all transactions with a cash impact and the existing cash coverage.\r\n* `Intermediate` - Balance representing an intermediate amount such as the opening or closing balance incrementally carried forward from one page to the next in a multi-page statement or report.\r\n* `Localcurrency` - Balance representing the amount in the local market currency for which the asset is held.\r\n* `Limitrelated` - Balance of a specific limit value, eg, a bilateral balance is calculated in relation to a given bilateral limit.\r\n* `Reservedliquidity` - Balance representing the amount that a financial institution has set aside for a specific reason and which is therefore not available. In the context of CSDs, reservation of liquidity made to meet settlement obligations.\r\n* `Securitiespending` - Balance of securities pending delivery, such as orders to sell securities have been executed but settlement of the open transactions has not been confirmed.\r\n* `Payinpayout` - Balance representing the fictive amount of automated direct debits or payment based on standing arrangements between the CSD and the user. Usage: Pay-Ins and Pay-Outs can be different based on individual payment instructions or available funds.\r\n* `Progressiveaverage` - Average of the daily balances on the account used to fulfil the reserve requirements calculated from the beginning of the maintenance period.\r\n* `Reserve` - Balance representing the regulatory reserve that a financial institution must have with the account servicing institution, eg, the minimum credit balance a financial institution is to keep with its Central Bank for mandatory reserve purposes.\r\n* `Selfcollateralization` - Balance representing the forecast of the cash-equivalent resulting from evaluation of the net incoming balance of securities qualified to serve as collateral for which settlement instructions are held at.\r\n* `Amountsthathavebeenusedtoserveasselfcollateral` - Balance representing the cash-equivalent resulting from evaluation of incoming securities, qualified to serve as collateral and actually used as collateral, which have been settled during the settlement process.\r\n* `Threshold` - Balance representing the amount that will be destined for investment. Difference between available balance and threshold for investment limit.\r\n"
+    accountbalance:
+      type: object
+      properties:
+        BalanceAmount:
+          $ref: '#/components/schemas/amount'
+        BalanceType:
+          $ref: '#/components/schemas/balancetypevalues'
+        BalanceValueDate:
+          $ref: '#/components/schemas/datetime'
+        BalanceIndicator:
+          $ref: '#/components/schemas/debitcreditindicatortvalues'
+        BalanceCounterpartyType:
+          $ref: '#/components/schemas/balancecounterpartytypevalues'
+        BalanceCalculationDate:
+          $ref: '#/components/schemas/datetime'
+        BalanceSubType:
+          $ref: '#/components/schemas/balancesubtypevalues'
+      description: |-
+        Actual balance, including uncleared transactions. (Customer Product View)
+        Balance the bank legally records at a point in time. (Bank Agreement View) Balance|Balance (https://www.iso20022.org/standardsrepository/type/Balance)|Standard|ISO20022 BM ()
+    accountstatustypevalues:
+      enum:
+        - Enabled
+        - Disabled
+        - Deleted
+        - Proforma
+        - Pending
+      type: string
+      description: ">\r\n* `Enabled` - Account can be used for its intended purpose.\r\n* `Disabled` - Account cannot be used for its intended purpose, either temporarily or permanently.\r\n* `Deleted` - Account cannot be used any longer.\r\n* `Proforma` - Account is temporary and can be partially used for its intended purpose. The account will be fully available for use when the account servicer has received all relevant documents.\r\n* `Pending` - Account change is pending approval.\r\n"
+    accountstatus:
+      type: object
+      properties:
+        AccountStatus:
+          $ref: '#/components/schemas/status'
+        AccountStatusType:
+          $ref: '#/components/schemas/accountstatustypevalues'
+      description: |-
+        Status shown to customer: ACTIVE, FROZEN, CLOSED, DORMANT. (Customer Product View)
+        Contract status managed by bank (open, terminated, suspended). (Bank Agreement View) AccountStatus|AccountStatus (https://www.iso20022.org/standardsrepository/type/AccountStatus)|Standard|ISO20022 BM ()
+    actiontypevalues:
+      enum:
+        - Initiate
+        - Execute
+        - Create
+        - Transfer
+        - Pay
+        - Deliver
+        - Apply
+        - Calculate
+      type: string
+      description: ">\r\n* `Initiate` - \r\n* `Execute` - \r\n* `Create` - \r\n* `Transfer` - \r\n* `Pay` - \r\n* `Deliver` - \r\n* `Apply` - \r\n* `Calculate` - \r\n"
+    action:
+      type: object
+      properties:
+        ActionType:
+          $ref: '#/components/schemas/actiontypevalues'
+      description: ''
+    arrangementstatustypevalues:
+      enum:
+        - Requested
+        - Proposed
+        - Offered
+        - Accepted
+        - Cancelled
+        - Fulfilled
+        - Terminated
+      type: string
+      description: ">\r\n* `Requested` - \r\n* `Proposed` - \r\n* `Offered` - \r\n* `Accepted` - \r\n* `Cancelled` - \r\n* `Fulfilled` - \r\n* `Terminated` - \r\n"
+    arrangementstatus:
+      type: object
+      properties:
+        ArrangementStatus:
+          $ref: '#/components/schemas/status'
+        ArrangementStatusType:
+          $ref: '#/components/schemas/arrangementstatustypevalues'
+      description: A characteristic of arrangement which refers to the LifecycleStatus of arrangement (e.g., requested, proposed, offered, accepted, cancelled, terminated, fulfilled, etc.)
+    subject:
+      type: object
+      properties:
+        Subject:
+          type: string
+          description: A thing that is discussed or dealt whit in agreement/arrangement about doing or not doing (as action) something.
+          format: class
+          example: contract-agreement
+      description: ''
+    arrangementtypevalues:
+      enum:
+        - SweepArrangement
+        - WithdrawalArrangement
+        - DepositArrangement
+        - InterestArrangement
+        - FeeArrangement
+        - LienArrangement
+        - InformationArrangement
+        - PaymentArrangement
+        - EntitlementArrangement
+        - PeriodArrangement
+        - CollateralArrangement
+        - LimitArrangement
+        - AccessArrangement
+        - CardPaymentArrangement
+        - StandingOrderArrangement
+        - OverdraftArrangement
+        - RepaymentArrangement
+        - StatementArrangement
+        - CreditTransferArrangement
+        - ProductAndServiceArrangement
+        - FactoringArrangement
+        - RolloverArrangement
+        - RestructuringArrangement
+        - InsuranceArrangement
+        - CollectionArrangement
+        - UnderwritingArrangement
+        - TerminationArrangement
+        - MaturityArrangement
+      type: string
+      description: ">\r\n* `SweepArrangement` - An arrangement into which is promised for the set-up and execution of structured sweeps to and from the facility to a linked account.\r\n* `WithdrawalArrangement` - An arrangement into which is promised to deliver Withdraw Service  to take fund out of an account. \r\n* `DepositArrangement` - An arrangement into which is promised to deliver Deposit Service  to place funds into an account for safekeeping. \r\n* `InterestArrangement` - An arrangement into which is promised to apply a pricing element expressed in a percentage  to a principal amount.\r\n* `FeeArrangement` - An arrangement into which is promised to apply a charge for services rendered. \r\n* `LienArrangement` - An arrangement into which is promised for placing a lien or block on the account for a specified purpose, amount, and period. \r\n* `InformationArrangement` - An arrangement concerning the information the bank will provide about the agreement/account\r\n* `PaymentArrangement` - An arrangement into which is promised to deliver a specific payment service including regular payments, standing orders, direct debits and bill pay instructions. \r\n* `EntitlementArrangement` - Right or obligation linked to the involvement of a party in an agreement\r\n* `PeriodArrangement` - \r\n* `CollateralArrangement` - An arrangement into which is promised for handling the oversight of the allocation, valuation and administration of collateral associated with the facility. \r\n* `LimitArrangement` - An arrangement to limit something\ne.g., the number of transaction per week, the amount of money allowed to withdraw per week/day and etc. \r\n* `AccessArrangement` - An arrangement that allows or restricts the access to a service or product, channel or device through a specific access point\r\n* `CardPaymentArrangement` - An arrangement into which is promised to deliver Card payment Service to execute payment transactions through a payment card, including online payments. \r\n* `StandingOrderArrangement` - An arrangement into which is promised to deliver Standing Order Service to make regular transfers on given dates to a named beneﬁciary. \r\n* `OverdraftArrangement` - An arrangement into which is promised to deliver Overdraft Service  that allows fund transfer even if there is no provision on the account. \r\n* `RepaymentArrangement` - An arrangement into which is promised for paying back money previously borrowed from a lender. \r\n* `StatementArrangement` - An arrangement into which is promised to deliver a reporting service on payment transactions registered on an account. \r\n* `CreditTransferArrangement` - An arrangement into which is promised to allow a payer to transfer fund to a beneficiary. \r\n* `ProductAndServiceArrangement` - \r\n* `FactoringArrangement` - \r\n* `RolloverArrangement` - Arrangement stipulating the modalities for an automatic renewal of the agreement\n\ni.e. the replacement of the agreement with a new one without renewed negociation and witout explicit agreement of the customer \r\n* `RestructuringArrangement` - \r\n* `InsuranceArrangement` - \r\n* `CollectionArrangement` - An arrangement into which is promised to collect past-due debts from borrowers\r\n* `UnderwritingArrangement` - A contractual agreement between parties that commits the underwriter to assuming risk.\r\n* `TerminationArrangement` - \r\n* `MaturityArrangement` - \r\n"
+    arrangement:
+      type: object
+      properties:
+        ArrangementAction:
+          $ref: '#/components/schemas/action'
+        ArrangementStartDate:
+          $ref: '#/components/schemas/datetime'
+        ArrangementEndDate:
+          $ref: '#/components/schemas/datetime'
+        ArrangementStatus:
+          $ref: '#/components/schemas/arrangementstatus'
+        ArrangementSubjectMatter:
+          $ref: '#/components/schemas/subject'
+        Arrangementtype:
+          $ref: '#/components/schemas/arrangementtypevalues'
+        ArrangementIdentification:
+          $ref: '#/components/schemas/identifier'
+      description: |-
+        Usually not visible in day-to-day banking. (Customer Product View)
+        Full legal contract governing account operation. (Bank Agreement View) Obligation|Obligation (https://www.iso20022.org/standardsrepository/type/Obligation)|Standard|ISO20022 BM ()
+    currentaccounttypevalues:
+      enum:
+        - BusinessCurrentAccount
+        - PersonalCurrentAccount
+        - StandardCurrentAccount
+        - PremiumOrPackagedCurrentAccount
+        - StudentCurrentAccount
+        - YouthCurrentAccount
+        - JointCurrentAccount
+        - SalaryAccount
+        - ForeignCurrencyCurrentAccount
+        - IslamicCurrentAccount
+        - BasicBankAccount
+        - PrivateBankingCurrentAccount
+      type: string
+      description: Defines if its checking/current, savings, business, premium, etc. |||
+    CurrentAccountFacility:
+      type: object
+      properties:
+        CurrentAccountFacilityIdentification:
+          $ref: '#/components/schemas/identifier'
+        CurrentAccountIdentification:
+          $ref: '#/components/schemas/accountidentification'
+        CurrentAccountBankReference:
+          type: string
+          description: Reference to a party who is Current Account Servicer or Bank
+          format: text
+          example: ABC_Bank_Ltd
+        CurrentAccountName:
+          $ref: '#/components/schemas/name'
+        CurrentAccountCurrency:
+          $ref: '#/components/schemas/accountcurrency'
+        CurrentAccountAvailableBalance:
+          $ref: '#/components/schemas/accountbalance'
+        CurrentAccountCurrentBalance:
+          $ref: '#/components/schemas/accountbalance'
+        CurrentAccountStatus:
+          $ref: '#/components/schemas/accountstatus'
+        CurrentAccountOpenDate:
+          $ref: '#/components/schemas/datetime'
+        CurrentAccountCloseDate:
+          $ref: '#/components/schemas/datetime'
+        CurrentAccountCustomerReference:
+          type: string
+          description: |
+            Reference to a Party who is Current Account Holder or Customer
+          format: text
+          example: customer-12345
+        CurrentAccountArrangement:
+          $ref: '#/components/schemas/arrangement'
+        CurrentAccountType:
+          $ref: '#/components/schemas/currentaccounttypevalues'
+      description: ''
+  responses:
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    CurrentAccountFacility:
+      description: CurrentAccountFacility
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CurrentAccountFacility'
+    Payment:
+      description: Payment
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Payment'
+  parameters:
+    currentaccountid:
+      name: currentaccountid
+      in: path
+      required: true
+      style: simple
+      schema:
+        type: string
+    paymentid:
+      name: paymentid
+      in: path
+      required: true
+      style: simple
+      schema:
+        type: string
+  requestBodies:
+    CurrentAccountFacility:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CurrentAccountFacility'
+      required: true
+    Payment:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Payment'
+      required: true
