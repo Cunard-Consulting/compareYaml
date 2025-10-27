@@ -1,0 +1,747 @@
+openapi: 3.0.1
+info:
+  title: Payment Order
+  description: This service domain handles the bank-side processing of funds transfers, making the necessary bank and regulatory checks on the involved parties and applying their payment preferences where appropriate
+  contact:
+    name: BIAN
+    url: https://bian.org
+  version: 13.0.0
+servers:
+  - url: https://virtserver.swaggerhub.com/B154/BIAN/PaymentOrder/13.0.0
+paths:
+  /PaymentOrder/Initiate:
+    post:
+      tags:
+        - CR - PaymentOrderProcedure
+      summary: Initiate Payment Order Procedure
+      description: Initiate Payment Order Procedure
+      operationId: Initiate
+      requestBody:
+        $ref: '#/components/requestBodies/PaymentOrderProcedure'
+      responses:
+        '200':
+          $ref: '#/components/responses/PaymentOrderProcedure'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /PaymentOrder/{paymentorderid}/Retrieve:
+    get:
+      tags:
+        - CR - PaymentOrderProcedure
+      summary: Retrive Payment Order Procedure
+      description: Retrive Payment Order Procedure
+      operationId: Retrieve
+      parameters:
+        - $ref: '#/components/parameters/paymentorderid'
+      responses:
+        '200':
+          $ref: '#/components/responses/PaymentOrderProcedure'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    HTTPError:
+      type: object
+      properties:
+        status_code:
+          type: string
+          format: string
+          example: 400 Bad Request
+        status:
+          type: string
+          format: string
+          example: 500 Internal Server Error
+        message:
+          type: string
+          format: string
+          example: Not Found
+      description: Status Attributes
+    datetimetypevalues:
+      enum:
+        - MaturityDate
+        - InitiatedDate
+        - RequestedDate
+        - ExecutedDate
+        - OpenDate
+        - CloseDate
+        - ExpiryDate
+        - EffectiveDate
+        - CreatingDate
+        - ActivationDate
+        - DeactivationDate
+        - BlockingDate
+        - SendingDate
+        - ValidFromDate
+        - ValidToDate
+        - ReceivingDate
+        - SigningDate
+        - DueDate
+        - ValueDate
+        - FulfillmentDate
+      type: string
+      description: ">\r\n* `MaturityDate` - \r\n* `InitiatedDate` - \r\n* `RequestedDate` - \r\n* `ExecutedDate` - \r\n* `OpenDate` - \r\n* `CloseDate` - \r\n* `ExpiryDate` - \r\n* `EffectiveDate` - \r\n* `CreatingDate` - \r\n* `ActivationDate` - \r\n* `DeactivationDate` - \r\n* `BlockingDate` - \r\n* `SendingDate` - \r\n* `ValidFromDate` - \r\n* `ValidToDate` - \r\n* `ReceivingDate` - \r\n* `SigningDate` - \r\n* `DueDate` - \r\n* `ValueDate` - \r\n* `FulfillmentDate` - \r\n"
+    datetime:
+      type: object
+      properties:
+        DateTimeContent:
+          type: string
+          description: The particular date and time point in the progression of time
+          format: text
+          example: '2023-10-15T14:30:00Z'
+        TimeZoneCode:
+          type: string
+          description: The time zone to which the date time refers.
+          format: text
+          example: UTC
+        DaylightSavingIndicator:
+          type: string
+          description: ''
+          format: text
+          example: DST_ENDS_1_NOV
+        DateTimeType:
+          $ref: '#/components/schemas/datetimetypevalues'
+      description: |-
+        Key dates and times related to Payment Order like:
+        Value Date: The date on which funds are to be made available to the beneficiary.
+        Executed Date: Actual date/time of execution ISODateTime|ISODateTime (https://www.iso20022.org/standardsrepository/type/ISODateTime)|Standard|ISO20022 BM ()
+    identifier:
+      type: object
+      properties:
+        IdentifierValue:
+          type: string
+          description: tThe actual unique code or number (e.g., passport number, drivers license number).
+          format: value
+          example: A12345678
+        IdentifierIssuingAuthority:
+          type: string
+          description: |-
+            Entity that assigns and manages the identification.
+            the organization or agency that issued the identifier (e.g., DMV, Passport Office).
+          format: text
+          example: Department of Motor Vehicles
+        IdentifierStartDate:
+          $ref: '#/components/schemas/datetime'
+        IdentifierEndDate:
+          $ref: '#/components/schemas/datetime'
+      description: |-
+        Payment Order Identifiers are the unique references used to trace, reconcile, and match a payment order as it moves through the banks systems and external networks.
+
+        Comment:
+        It is a financial transaction that may give rise to multiple underlying transfers. For example, a single payment from a payer to a payee represents one financial transaction, but it can trigger several financial transfers during the clearing and settlement process, such as deductions for fees and charges, application of interest, or currency conversion. GenericIdentification|GenericIdentification (https://www.iso20022.org/standardsrepository/type/GenericIdentification)|Standard|ISO20022 BM ()
+    name:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: A name is a word or phrase that constitutes the distinctive designation of a person, place, thing or concept. (UN/CEFAT)
+          format: datatype
+          example: Alice Johnson
+      description: Name of the customer sending funds. Name|Name (https://www.iso20022.org/standardsrepository/type/Name)|Standard|ISO20022 ()
+    addresstypevalues:
+      enum:
+        - PostalAddress
+        - GeolocationAddress
+        - LatitudeAddress
+        - LongitudeAddress
+        - ElectronicAddress
+      type: string
+      description: ">\r\n* `PostalAddress` - \r\n* `GeolocationAddress` - \r\n* `LatitudeAddress` - \r\n* `LongitudeAddress` - \r\n* `ElectronicAddress` - \r\n"
+    address:
+      type: object
+      properties:
+        AddressType:
+          $ref: '#/components/schemas/addresstypevalues'
+        AddressDescription:
+          type: string
+          description: ''
+          format: text
+          example: 123 Main Street, Apt 4B, Springfield, IL 62704
+      description: Address of the customer sending funds. Location/Address|Location/Address (https://www.iso20022.org/standardsrepository/type/Location)|Standard|ISO20022 BM ()
+    accountidentificationtypevalues:
+      enum:
+        - BBAN
+        - IBAN
+        - UPIC
+        - AccountNumber
+        - PAN
+        - Paym
+        - Wallet
+        - SortCodeAndAccountNumber
+        - AIIN
+        - CUID
+      type: string
+      description: ">\r\n* `BBAN` - Basic Bank Account Number (BBAN) - identifier used nationally by financial institutions, ie, in individual countries, generally as part of a National Account Numbering Scheme(s), to uniquely identify the account of a customer. (ISO20022)\n\n.\r\n* `IBAN` - International Bank Account Number (IBAN) - identifier used internationally by financial institutions to uniquely identify the account of a customer. Further specifications of the format and content of the IBAN can be found in the standard ISO 13616 \"Banking and related financial services - International Bank Account Number (IBAN)\" version 1997-10-01, or later revisions. (ISO20022)\n\nAn identifier used internationally by financial institutions to uniquely identify the account of a customer at a financial institution, as described in the latest edition of the international standard ISO 13616. \"Banking and related financial services - International Bank Account Number (IBAN)\". (OBExternalAccountIdentification4Code)\r\n* `UPIC` - Universal Payment Identification Code (UPIC) - identifier used by the New York Clearing House to mask confidential data, such as bank accounts and bank routing numbers. UPIC numbers remain with business customers, regardless of banking relationship changes. (ISO20022)\r\n* `AccountNumber` - String of characters (mainly numbers) used to identify an account.(ISO20022)\n\r\n* `PAN` - Primary Account Number - identifier scheme used to identify a card account. (OBExternalAccountIdentification4Code)\r\n* `Paym` - Paym Scheme to make payments via mobile (OBExternalAccountIdentification4Code)\r\n* `Wallet` - A primary and unique account identifier used to identify a wallet.\nAn ASPSP must document on their developer portal, the payment methods that supports this account identifier.(OBExternalAccountIdentification4Code)\r\n* `SortCodeAndAccountNumber` - Sort Code and Account Number - identifier scheme used in the UK by financial institutions to identify the account of a customer. The identifier is the concatenation of the 6 digit UK sort code and 8 digit account number. (UK Open Banking)\r\n* `AIIN` - IssuerIdentificationNumber\r\n* `CUID` - CHIPSUniversalIdentifier\r\n"
+    accountidentification:
+      type: object
+      properties:
+        AccountIdentificationType:
+          $ref: '#/components/schemas/accountidentificationtypevalues'
+        AccountIdentification:
+          $ref: '#/components/schemas/identifier'
+      description: A unique reference to account of the customer sending funds. AccountIdentification |AccountIdentification  (https://www.iso20022.org/standardsrepository/type/AccountIdentification)|Standard|ISO20022 BM ()
+    currencycode:
+      type: object
+      properties:
+        Currencycode:
+          type: string
+          description: |+
+            A code identifying a currency according to ISO-4217.
+            A currency is a system of money in general use in a particular country.
+
+            Code allocated to a currency, by a maintenance agency, under an international identification scheme as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds". Valid currency codes are registered with the ISO 4217 Maintenance Agency, and consist of three contiguous letters. (ISO20022)
+
+          format: datatype
+          example: USD
+      description: |-
+        Currency of the transfer.
+        Currency identifier (e.g. the ISO code) CurrencyCode|CurrencyCode (https://www.iso20022.org/standardsrepository/type/CurrencyCode)|Standard|ISO20022 BM ()
+    amounttypevalues:
+      enum:
+        - Principal
+        - Actual
+        - Estimated
+        - Maximum
+        - Default
+        - Replacement
+        - Incremental
+        - Decremental
+        - Reserved
+        - Available
+        - Used
+        - DuePayable
+        - Minimum
+        - Open
+        - Unknown
+        - Fixed
+      type: string
+      description: ">\r\n* `Principal` - \r\n* `Actual` - Actual amount.\r\n* `Estimated` - Estimated amount (the final amount could be above or below).\r\n* `Maximum` - Maximum amount (the final amount must be less or equal).\r\n* `Default` - Default amount.\r\n* `Replacement` - Replacement amount.\r\n* `Incremental` - Incremental amount for reservation.\r\n* `Decremental` - Decremental amount for reservation.\r\n* `Reserved` - Reserved or updated reserved amount for reservation.\r\n* `Available` - \r\n* `Used` - \r\n* `DuePayable` - \r\n* `Minimum` - \r\n* `Open` - The amount is open.(ISO20022)\r\n* `Unknown` - The amount is unkown.(ISO20022)\r\n* `Fixed` - The amount represents a fixed value.(ISO20022)\r\n"
+    amount:
+      type: object
+      properties:
+        AmountValue:
+          type: string
+          description: ''
+          format: value
+          example: '19.99'
+        AmountCurrency:
+          $ref: '#/components/schemas/currencycode'
+        DecimalPointPosition:
+          type: string
+          description: |
+            Decimal point position starts calulating from the right
+          format: text
+          example: '2'
+        AmountType:
+          $ref: '#/components/schemas/amounttypevalues'
+      description: |-
+        The fixed amount to be transferred at each execution
+
+        Comment:
+        The amount to be paid to the payee excluding any fees/charges applied to the payer or those that might be deducted by the payee's bank.  CurrencyAndAmount|CurrencyAndAmount (https://www.iso20022.org/standardsrepository/type/CurrencyAndAmount)|Standard|ISO20022  ()
+    instructiondatetimetypevalues:
+      enum:
+        - DueDate
+        - ExecutionDate
+        - FulfillmentDate
+      type: string
+      description: ">\r\n* `DueDate` - \r\n* `ExecutionDate` - \r\n* `FulfillmentDate` - \r\n"
+    instructiondatetime:
+      type: object
+      properties:
+        InstructionDate:
+          $ref: '#/components/schemas/datetime'
+        InstructionDateType:
+          $ref: '#/components/schemas/instructiondatetimetypevalues'
+      description: ''
+    instructionstatustypevalues:
+      enum:
+        - Pendingprocessing
+        - Acknowledgedaccepted
+        - Rejected
+        - Accepted
+        - Completed
+        - Notreceived
+        - Cancelled
+        - Beingcancelled
+        - Receivedbyissuerorregistrar
+        - Pending
+        - Standinginstruction
+        - Queued
+        - Cancelledbysubcustodian
+        - Forwarded
+      type: string
+      description: ">\r\n* `Pendingprocessing` - Processing of the instruction is pending.\r\n* `Acknowledgedaccepted` - Instruction has been acknowledged and accepted and is validated for further processing.\r\n* `Rejected` - Instruction has been rejected.\r\n* `Accepted` - Instruction has been accepted and is validated for further processing.\r\n* `Completed` - Processing has been completed.\r\n* `Notreceived` - No instruction has been received (to be used in a reminder).\r\n* `Cancelled` - Instruction has been cancelled.\r\n* `Beingcancelled` - Cancel request is being processed.\r\n* `Receivedbyissuerorregistrar` - Instruction has been received by Issuer.\r\n* `Pending` - Instruction is pending.\r\n* `Standinginstruction` - Standing instruction is applied.\r\n* `Queued` - Instruction is queued.\r\n* `Cancelledbysubcustodian` - Instruction has been cancelled by the agent, for example, due to an event deadline extension.\r\n* `Forwarded` - Accepted and sent along the chain.\r\n"
+    datetimeperiod:
+      type: object
+      properties:
+        FromDateTime:
+          $ref: '#/components/schemas/datetime'
+        ToDateTime:
+          $ref: '#/components/schemas/datetime'
+      description: Period of time during which the status is valid.
+    partytypevalues:
+      enum:
+        - Person
+        - Organisation
+      type: string
+      description: ">\r\n* `Person` - Human entity, as distinguished from a corporate entity (which is sometimes referred to as an 'artificial person'). ISO20022\r\n* `Organisation` - Organised structure that is set up for a particular purpose. For example, a business, government body, department, charity, or financial institution. ISO20022\r\n"
+    partyidentificationtypevalues:
+      enum:
+        - Taxidentificationnumber
+        - Nationalregistrationnumber
+        - Registrationauthorityidentification
+        - LEI(LegalEntityIdentifier)
+        - Alienregistrationnumber
+        - Passportnumber
+        - Taxexemptidentificationnumber
+        - Corporateidentification
+        - Driverlicensenumber
+        - Foreigninvestmentidentitynumber
+        - Socialsecuritynumber
+        - Identitycardnumber
+        - Concat
+        - Nationalregistrationidentificationnumber
+      type: string
+      description: ">\r\n* `Taxidentificationnumber` - Number assigned by a tax authority to an entity.\r\n* `Nationalregistrationnumber` - Number assigned by a national registration authority to an entity. In Singapore this is known as the NRIC. (ISO20022)\r\n* `Registrationauthorityidentification` - An identifier for the Legal Entity in a business registry in the jurisdiction of legal registration, or in the appropriate registration authority. (ISO20022)\r\n* `LEI(LegalEntityIdentifier)` - \r\n* `Alienregistrationnumber` - Number assigned by a government agency to identify foreign nationals.\r\n* `Passportnumber` - Number assigned by a passport authority.\r\n* `Taxexemptidentificationnumber` - Number assigned to a tax exempt entity.\r\n* `Corporateidentification` - Number assigned to a corporate entity.\r\n* `Driverlicensenumber` - Number assigned to a driver's license.\r\n* `Foreigninvestmentidentitynumber` - Number assigned to a foreign investor (other than the alien number).\r\n* `Socialsecuritynumber` - Number assigned by a social security agency.\r\n* `Identitycardnumber` - Number assigned by a national authority to an identity card.\r\n* `Concat` - Number assigned by an issuer to identify a customer via the concatenation of the birthdate and characters of the first name and surname.\r\n* `Nationalregistrationidentificationnumber` - National registration identification number. In Singapore this is known as the NRIC.\r\n"
+    partyidentification:
+      type: object
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/partyidentificationtypevalues'
+        PartyIdentification:
+          $ref: '#/components/schemas/identifier'
+      description: ''
+    partylegalstructuretypevalues:
+      enum:
+        - Individual
+        - CommunityInterestCompany
+        - CharitableIncorporatedOrganisation
+        - Co-Operative
+        - Charity
+        - GeneralPartnership
+        - LimitedLiabilityPartnership
+        - ScottishLimitedPartnership
+        - LimitedPartnership
+        - PrivateLimitedCompany
+        - PublicLimitedCompany
+        - Sole(SoleTrader)
+      type: string
+      description: ">\r\n* `Individual` - \r\n* `CommunityInterestCompany` - \r\n* `CharitableIncorporatedOrganisation` - \r\n* `Co-Operative` - \r\n* `Charity` - \r\n* `GeneralPartnership` - \r\n* `LimitedLiabilityPartnership` - \r\n* `ScottishLimitedPartnership` - \r\n* `LimitedPartnership` - \r\n* `PrivateLimitedCompany` - \r\n* `PublicLimitedCompany` - \r\n* `Sole(SoleTrader)` - \r\n"
+    industrycode:
+      type: object
+      properties:
+        Industrycode:
+          type: string
+          description: Code to identify economic activities by ISIC (United Nations International Standard Industrial Classification of all Economic Activities).
+          format: datatype
+          example: '5610'
+      description: Economical activity of Party (ISO20022)
+    party:
+      type: object
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/name'
+        PartyType:
+          $ref: '#/components/schemas/partytypevalues'
+        PartyDateTime:
+          $ref: '#/components/schemas/datetime'
+        PartyIdentification:
+          $ref: '#/components/schemas/partyidentification'
+        PartyLegalStructureType:
+          $ref: '#/components/schemas/partylegalstructuretypevalues'
+        PartyActivityIndicator:
+          $ref: '#/components/schemas/industrycode'
+      description: ''
+    partyinvolvementtypevalues:
+      enum:
+        - AgreementInvolvement
+        - PartyInvolvement
+        - ArrangementInvolvement
+        - DesignSpecificationInvolvement
+        - RelationshipInvolvement
+        - LocationInvolvement
+        - BankGuaranteeInvolvement
+      type: string
+      description: ">\r\n* `AgreementInvolvement` - \r\n* `PartyInvolvement` - \r\n* `ArrangementInvolvement` - \r\n* `DesignSpecificationInvolvement` - \r\n* `RelationshipInvolvement` - \r\n* `LocationInvolvement` - \r\n* `BankGuaranteeInvolvement` - \r\n"
+    partyrole:
+      type: object
+      properties:
+        PartyRoleType:
+          type: string
+          description: ''
+          format: text
+          example: customer-support-agent
+        PartyRoleName:
+          $ref: '#/components/schemas/name'
+        PartyRoleValidityPeriod:
+          $ref: '#/components/schemas/datetimeperiod'
+        PartyInvolvementType:
+          $ref: '#/components/schemas/partyinvolvementtypevalues'
+      description: ''
+    involvedparty:
+      type: object
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/party'
+        PartyInvolvement:
+          $ref: '#/components/schemas/partyrole'
+      description: Party who plays a  specific role in the context of assigning a status.
+    status:
+      type: object
+      properties:
+        StatusReason:
+          type: string
+          description: Specifies the reasons for the status.
+          format: text
+          example: System maintenance in progress
+        StatusDateTime:
+          $ref: '#/components/schemas/datetime'
+        StatusValidityPeriod:
+          $ref: '#/components/schemas/datetimeperiod'
+        StatusInvolvedParty:
+          $ref: '#/components/schemas/involvedparty'
+      description: ''
+    instructionstatus:
+      type: object
+      properties:
+        InstructionStatusType:
+          $ref: '#/components/schemas/instructionstatustypevalues'
+        InstructionStatus:
+          $ref: '#/components/schemas/status'
+      description: 'A characteristic of instruction which refers to the LifecycleStatus of instruction (e.g., requested, executed, fulfilled, etc.); '
+    instructionidentificationtypevalues:
+      enum:
+        - OrderNumber
+        - InstructionNumber
+      type: string
+      description: ">\r\n* `OrderNumber` - \r\n* `InstructionNumber` - \r\n"
+    instructionidentification:
+      type: object
+      properties:
+        InstructionIdentification:
+          $ref: '#/components/schemas/identifier'
+        InstructionIdentificationType:
+          $ref: '#/components/schemas/instructionidentificationtypevalues'
+      description: |
+        An identifier that allows to uniquely refer to an instance of an Instruction.
+    instructiontypevalues:
+      enum:
+        - PaymentInstruction
+        - DeliveryOrder
+        - InformationRequest
+        - ExchangeInstruction
+        - AllocationInstruction
+        - MaintenanceInstruction
+      type: string
+      description: ">\r\n* `PaymentInstruction` - \r\n* `DeliveryOrder` - \r\n* `InformationRequest` - \r\n* `ExchangeInstruction` - \r\n* `AllocationInstruction` - \r\n* `MaintenanceInstruction` - \r\n"
+    log:
+      type: object
+      properties:
+        LogType:
+          type: string
+          description: ''
+          format: text
+          example: error
+        LogPeriod:
+          $ref: '#/components/schemas/datetimeperiod'
+        LogDate:
+          $ref: '#/components/schemas/datetime'
+        LogIdentification:
+          $ref: '#/components/schemas/identifier'
+      description: ''
+    instruction:
+      type: object
+      properties:
+        InstructionDate:
+          $ref: '#/components/schemas/instructiondatetime'
+        InstructionStatus:
+          $ref: '#/components/schemas/instructionstatus'
+        InstructionIdentification:
+          $ref: '#/components/schemas/instructionidentification'
+        InstructionType:
+          $ref: '#/components/schemas/instructiontypevalues'
+        InstructionResult:
+          type: string
+          description: ''
+          format: text
+          example: 'Installation complete: Please follow the setup guide for optimal performance'
+        InstructionDescription:
+          type: string
+          description: ''
+          format: text
+          example: Ensure all cables are securely connected before powering on the device.
+        InstructionLog:
+          $ref: '#/components/schemas/log'
+        InstructionPurpose:
+          type: string
+          description: ''
+          format: text
+          example: update-software
+      description: How and where a payment should be settled  |||
+    paymenttypevalues:
+      enum:
+        - Cashtransaction
+        - Domesticpayment
+        - Domestichighvaluepayment
+        - Domesticprioritypayment
+        - Crossborderpayment
+        - Crossborderprioritypayment
+        - Crossborderhighvaluepayment
+        - Thirdcurrencypayment
+        - Thirdcurrencyhighvaluepayment
+        - Thirdcurrencyprioritypayment
+        - Tradesettlementpayment
+        - Foreignexchange
+        - Equivalentamount
+        - Loan
+        - Loanrepayment
+        - Securities
+        - Lockbox
+        - Dividend
+        - Crossedcheque
+        - Opencheque
+        - Ordercheque
+        - Circularcheque
+        - Travellerscheques
+        - Bankdraft
+        - Documentarycredit
+        - Billofexchange
+        - Collection
+        - Cashmanagementtransfer
+        - Topaccount
+        - Zerobalanceaccount
+        - Standingfacilities
+        - Standardservicelevelcredit
+        - Liquiditytransfer
+        - Advancepayment
+        - Valuedateadjustment
+        - Dvpgross
+        - Dvpnet
+        - Netting
+        - Limitpayment
+        - Backup
+        - Expresspayment
+        - Centralbankoperation
+        - Clspayment
+        - Eurodomesticpayment
+        - Agriculturaltransfer
+        - Alimonypayment
+        - Balanceretail
+        - Bonuspayment.
+        - Brokeragefee
+        - Capitalbuilding
+        - Charitypayment
+        - Childbenefit
+        - Commercialcredit
+        - Commission
+        - Commoditytransfer
+        - Costs
+        - Copyright
+        - Governmentpayment
+        - Instalmenthirepurchaseagreement
+        - Insurancepremium
+        - Intracompanypayment
+        - Interest
+        - Licensefee
+        - Metals
+        - Pensionpayment
+        - Purchasesaleofgoods
+        - Refund
+        - Rent
+        - Royalties
+        - Purchasesaleofservices
+        - Salarypayment
+        - Socialsecuritybenefit
+        - Standingorder
+        - Subscription
+        - Treasurystatepayment
+        - Unemploymentdisabilitybenefit
+        - Valueaddedtaxpayment
+        - Taxpayment
+        - Overnightdeposit
+        - Marginallending
+        - Other
+        - Upfront
+        - Unwind
+        - Principalexchange
+      type: string
+      description: 'Type of payment: Domestic, cross-border, SEPA, SWIFT, etc. PaymentTypeCode|PaymentTypeCode (https://www.iso20022.org/standardsrepository/type/PaymentTypeCode)|Standard|ISO20022 BM ()'
+    priorityvaluetypes:
+      enum:
+        - Urgent
+        - High
+        - Normal
+        - Low
+      type: string
+      description: Urgency of the payment (normal, urgent, high-value). PriorityCode|PriorityCode (https://www.iso20022.org/standardsrepository/type/PriorityCode)|Standard|ISO20022 BM ()
+    paymentmethodtypevalues:
+      enum:
+        - Cheque
+        - Credittransfer
+        - Directdebit
+        - Transferadvice
+        - Direct
+        - Classical
+      type: string
+      description: Type of payment method (credit transfer, standing order, instant payment, etc.). PaymentMethodCode|PaymentMethodCode (https://www.iso20022.org/standardsrepository/type/PaymentMethodCode)|Standard|ISO20022 BM ()
+    chargebearertypevalues:
+      enum:
+        - Bornebydebtor
+        - Bornebycreditor
+        - Shared
+        - Followingservicelevel
+      type: string
+      description: Who pays whatever fees are involved ChargeBearerTypeCode|ChargeBearerTypeCode (https://www.iso20022.org/standardsrepository/type/ChargeBearerTypeCode)|Standard|ISO20022 BM ()
+    PaymentOrderProcedure:
+      type: object
+      properties:
+        PaymentOrderProcedureIdentification:
+          $ref: '#/components/schemas/identifier'
+        PaymentOrderIdentification:
+          $ref: '#/components/schemas/identifier'
+        PaymentOrderPayeeReference:
+          type: string
+          description: Referece to Party who is Beneficiary Customer (Payee)
+          format: text
+          example: payee-reference-123456
+        PaymentOrderPayeeName:
+          $ref: '#/components/schemas/name'
+        PaymentOrderPayeeAddress:
+          $ref: '#/components/schemas/address'
+        PaymentOrderPayeeAccountIdentification:
+          $ref: '#/components/schemas/accountidentification'
+        PaymentOrderPayeeBankReference:
+          type: string
+          description: Reference to Party who is Beneficiary Bank (Payee Bank)
+          format: text
+          example: PAYEBANK123456789
+        PaymentOrderPayerReference:
+          type: string
+          description: Referece to Party who is Ordering Customer (Payer)
+          format: text
+          example: payer-00123
+        PaymentOrderPayerName:
+          $ref: '#/components/schemas/name'
+        PaymentOrderPayerAddress:
+          $ref: '#/components/schemas/address'
+        PaymentOrderPayerAccountIdentification:
+          $ref: '#/components/schemas/accountidentification'
+        PaymentOrderPayerBankReference:
+          type: string
+          description: Reference to Party who is Ordering Bank (Payer Bank)
+          format: text
+          example: PayerBank001
+        PaymentOrderAmount:
+          $ref: '#/components/schemas/amount'
+        PaymentOrderCurrency:
+          $ref: '#/components/schemas/currencycode'
+        PaymentOrderDateandTime:
+          $ref: '#/components/schemas/datetime'
+        PaymentOrderSettlementInstructions:
+          $ref: '#/components/schemas/instruction'
+        PaymentOrderPaymentType:
+          $ref: '#/components/schemas/paymenttypevalues'
+        PaymentOrderPaymentPriority:
+          $ref: '#/components/schemas/priorityvaluetypes'
+        PaymentOrderPaymentMethod:
+          $ref: '#/components/schemas/paymentmethodtypevalues'
+        PaymentOrderRemittanceInformation:
+          type: string
+          description: Remittance Information is the descriptive data included in a payment order that explains the purpose of the payment and enables the beneficiary to reconcile the incoming funds with the corresponding invoice, contract, or obligation.
+          format: text
+          example: 'Payment for invoice #20234 dated 2023-03-15'
+        PaymentOrderRegulatoryorProcessingInformation:
+          type: string
+          description: Regulatory or Processing Information refers to the set of data elements included in a payment order that are required by regulatory authorities or payment system operators to ensure compliance, reporting, and correct handling of the payment as it flows through domestic or international networks.
+          format: text
+          example: regulatory-compliance-instructions
+        PaymentOrderAdditionalInformation:
+          type: string
+          description: Invoice number, contract ID, or other supporting references.
+          format: text
+          example: invoice-2023-574893
+        PaymentOrderChargeBearer:
+          $ref: '#/components/schemas/chargebearertypevalues'
+        PaymentOrderExecutedTransactionReference:
+          type: string
+          description: Reference to the executed payment
+          format: text
+          example: PO123456789
+      description: ''
+  responses:
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    PaymentOrderProcedure:
+      description: PaymentOrderProcedure
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PaymentOrderProcedure'
+  parameters:
+    paymentorderid:
+      name: paymentorderid
+      in: path
+      required: true
+      style: simple
+      schema:
+        type: string
+  requestBodies:
+    PaymentOrderProcedure:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PaymentOrderProcedure'
+      required: true
